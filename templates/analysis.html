@@ -1,0 +1,38 @@
+<!-- 
+This HTML file contains the template for the analysis page of the VirusTotal Flask Script web application. It includes a JavaScript function that periodically checks the status of the analysis and redirects to the results page when the analysis is complete. 
+-->
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Analysis - VirusTotal Flask Script</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='simple.min.css') }}">
+    <script src="{{ url_for('static', filename='jquery.min.js') }}"></script>
+    <script>
+        function checkAnalysisStatus() {
+            var scanId = "{{ scan_id }}"; // Pass the scan_id to the JavaScript
+            $.ajax({
+                url: '/check_status/' + scanId,
+                type: 'GET',
+                success: function(response) {
+                    if(response.status === 'completed') {
+                        // Redirect to the results page if the analysis is complete
+                        window.location.href = '/results/' + scanId;
+                    }
+                },
+                error: function() {
+                    alert('Error checking analysis status.');
+                }
+            });
+        }
+
+        $(document).ready(function(){
+            // Check the status every 10 seconds
+            setInterval(checkAnalysisStatus, 10000);
+        });
+    </script>
+</head>
+<body>
+    <h1>Analysis</h1>
+    <p>Please wait while we analyze your input.</p>
+</body>
+</html>
